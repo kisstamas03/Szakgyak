@@ -37,4 +37,50 @@ public class WhatsAppSender {
 
         System.out.println("Message SID: " + message.getSid());
     }
+    public static void sendMessageWithImage(String to, String imageUrl, String text) {
+        // Proxy beállítása (ha kell)
+        HttpHost proxy = new HttpHost("kaz0vlpx05ContGW.emea.whchem.com", 8080, "http");
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create().setProxy(proxy);
+        NetworkHttpClient httpClient = new NetworkHttpClient(clientBuilder);
+
+        // Twilio kliens létrehozása proxyval
+        TwilioRestClient client = new TwilioRestClient.Builder(ACCOUNT_SID, AUTH_TOKEN)
+                .httpClient(httpClient)
+                .build();
+
+        // Képes WhatsApp üzenet küldése
+        Message message = Message.creator(
+                        new PhoneNumber("whatsapp:" + to), // Címzett száma
+                        new PhoneNumber("whatsapp:+14155238886"), // Twilio sandbox WhatsApp szám
+                        text // Szöveg az üzenethez
+                )
+                .setMediaUrl(imageUrl) // Kép URL
+                .create(client);
+
+        System.out.println("Üzenet elküldve! SID: " + message.getSid());
+    }
+    public static void sendSticker(String to, String stickerUrl) {
+        // Proxy beállítása (ha kell)
+        HttpHost proxy = new HttpHost("kaz0vlpx05ContGW.emea.whchem.com", 8080, "http");
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create().setProxy(proxy);
+        NetworkHttpClient httpClient = new NetworkHttpClient(clientBuilder);
+
+        // Twilio kliens létrehozása proxyval
+        TwilioRestClient client = new TwilioRestClient.Builder(ACCOUNT_SID, AUTH_TOKEN)
+                .httpClient(httpClient)
+                .build();
+
+        // Sticker küldése
+        Message message = Message.creator(
+                        new PhoneNumber("whatsapp:" + to), // Címzett száma
+                        new PhoneNumber("whatsapp:+14155238886"), // Twilio sandbox WhatsApp szám
+                        "" // Nincs szöveg, csak a matricát küldjük
+                )
+                .setMediaUrl(stickerUrl) // Matrica URL
+                .create(client);
+
+        System.out.println("Üzenet elküldve! SID: " + message.getSid());
+    }
+
+
 }

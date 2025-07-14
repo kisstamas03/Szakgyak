@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class WhatsAppController {
@@ -17,13 +18,20 @@ public class WhatsAppController {
 
     @GetMapping("/")
     public String index() {
-        return "test";
+        return "index";
     }
 
     @PostMapping("/send-message")
     public String sendMessage(@RequestParam String phoneNumber, @RequestParam String message, Model model) {
-        twilioService.sendMessage(phoneNumber, message);
-        model.addAttribute("status", "Message sent to " + phoneNumber);
-        return "test"; // Visszatérés az index oldalra
+        if (phoneNumber == null || phoneNumber.isEmpty() || (!phoneNumber.startsWith("+36") && phoneNumber.length() != 11)) {
+            model.addAttribute("errorMessage", "Hibás telefonszám formátum! A számnak +36-tal kell kezdődnie és 11 karakter hosszúnak kell lennie.");
+        }else{
+            twilioService.sendMessage(phoneNumber, message);
+            model.addAttribute("status", "Message sent to " + phoneNumber);
+
+        }
+        return "index"; // Visszatérés az index oldalra
+
     }
+
 }

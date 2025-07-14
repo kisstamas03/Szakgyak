@@ -10,6 +10,6 @@ public class SzakGyakApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SzakGyakApplication.class, args);
-		
+
 	}
 }
